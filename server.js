@@ -20,7 +20,7 @@ app.use(express.json());
 
 // 1. Login
 app.post('/api/auth/login', async (req, res) => {
-    const { email, password } = req.body;
+    const { email, password, name } = req.body;
     
     // Busca usuário no banco
     const { data, error } = await supabase
@@ -28,13 +28,14 @@ app.post('/api/auth/login', async (req, res) => {
         .select('*')
         .eq('email', email)
         .eq('password', password) // Nota: Em prod, compare hash de senha!
+        .eq('name', name)
         .single();
 
     if (error || !data) {
-        return res.status(401).json({ success: false, message: 'Credenciais inválidas' });
+        return res.status(401).json({ success: false, message: 'Dados incorretos (Verifique Nome, Email e Senha)' });
     }
 
-    res.json({ success: true, user: { email: data.email, id: data.id } });
+    res.json({ success: true, user: { email: data.email, id: data.id, name: data.name } });
 });
 
 // 2. Listar Pacientes
