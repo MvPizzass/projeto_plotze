@@ -8,8 +8,8 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 // Configuração do Supabase
-const supabaseUrl = process.env.SUPABASE_URL;
-const supabaseKey = process.env.SUPABASE_KEY;
+const supabaseUrl = 'https://qrbntqufdwgoaukfbmqg.supabase.co/';
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFyYm50cXVmZHdnb2F1a2ZibXFnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ0Mzc1NDEsImV4cCI6MjA4MDAxMzU0MX0.f_3saXS2yCCpY6huYsqzN9le9_urUcT8wjqgnlLg3eU';
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 // Middlewares
