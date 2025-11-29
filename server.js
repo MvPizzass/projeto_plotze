@@ -38,7 +38,38 @@ app.post('/api/auth/login', async (req, res) => {
     res.json({ success: true, user: { email: data.email, id: data.id, name: data.name } });
 });
 
-// 2. Listar Pacientes
+// 2. Adicionar user
+app.post('/api/auth/register', async (req, res) => {
+    const { name, email, password } = req.body;
+
+    // Validação básica
+    if (!name || !email || !password) {
+        return res.status(400).json({ success: false, message: 'Preencha todos os campos.' });
+    }
+
+    // Verifica se já existe esse email
+    const { data: userExists } = await supabase
+        .from('users')
+        .select('*')
+        .eq('email', email)
+        .single();
+
+    if (userExists) {
+        return res.status(400).json({ success: false, message: 'Email já cadastrado.' });
+    }
+
+    // Insere no banco
+    const { data, error } = await supabase
+        .from('users')
+        .insert([{ name, email, password }]) // Atenção: Em prod, use hash na senha!
+        .select();
+
+    if (error) return res.status(500).json({ success: false, message: error.message });
+
+    res.json({ success: true, message: 'Cadastro realizado com sucesso!' });
+});
+
+// 3. Listar Pacientes
 app.get('/api/patients', async (req, res) => {
     const { data, error } = await supabase
         .from('patients')
@@ -49,7 +80,7 @@ app.get('/api/patients', async (req, res) => {
     res.json(data);
 });
 
-// 3. Criar Paciente
+// 4. Criar Paciente
 app.post('/api/patients', async (req, res) => {
     const { name, cpf, triage_status } = req.body;
     
@@ -62,7 +93,7 @@ app.post('/api/patients', async (req, res) => {
     res.json(data);
 });
 
-// 4. Buscar Paciente por ID (para edição)
+// 5. Buscar Paciente por ID (para edição)
 app.get('/api/patients/:id', async (req, res) => {
     const { id } = req.params;
     const { data, error } = await supabase
@@ -75,7 +106,7 @@ app.get('/api/patients/:id', async (req, res) => {
     res.json(data);
 });
 
-// 5. Atualizar Paciente
+// 6. Atualizar Paciente
 app.put('/api/patients/:id', async (req, res) => {
     const { id } = req.params;
     const { name, cpf, triage_status } = req.body;
@@ -90,7 +121,7 @@ app.put('/api/patients/:id', async (req, res) => {
     res.json(data);
 });
 
-// 6. Deletar Paciente
+// 7. Deletar Paciente
 app.delete('/api/patients/:id', async (req, res) => {
     const { id } = req.params;
     const { error } = await supabase
