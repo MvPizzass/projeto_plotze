@@ -12,7 +12,7 @@ const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 
-app.use(cors()); // Permite que o frontend acesse o backend
+app.use(cors()); 
 app.use(express.json());
 
 
@@ -57,7 +57,7 @@ app.post('/api/auth/register', async (req, res) => {
 
     const { data, error } = await supabase
         .from('users')
-        .insert([{ name, email, password }]) // Atenção: Em prod, use hash na senha!
+        .insert([{ name, email, password }]) 
         .select();
 
     if (error) return res.status(500).json({ success: false, message: error.message });
